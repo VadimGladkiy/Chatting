@@ -1,0 +1,45 @@
+<div class="item-card">
+  <div class="table-row list-item">
+    <div class="col-left">
+
+      @if('isPending' in comment && comment.isPending){
+      <button class="confirm-btn" (click)="onConfirmPendingClick($event)">
+        Confirm
+      </button>
+      <button class="deny-btn" (click)="onDenyPendingClick($event)">Deny</button>
+      }
+      @else{
+      <button class="reply-btn" (click)="onReplyClick($event)">Reply</button>
+      }
+
+      <img [src]="comment.imageUrl" alt="image" class="item-img" />
+      <span class="item-text">{{ comment.userName }}</span>
+    </div>
+    <div class="col-email">{{ comment.userEmail }}</div>
+    <div class="col-date">
+      <span class="item-date">{{ comment.date | date:'yyyy-MM-dd HH:mm:ss' }}</span>
+    </div>
+  </div>
+
+  <div class="row-body">
+    <div class="item-lower">
+      <p class="item-multiline-text" [innerHTML]="renderText(comment.text)"></p>
+
+      <div class="item-file" *ngIf="comment.textFileName">
+        <svg class="file-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg>
+        <button type="button" class="file-name" (click)="onFilePreviewClick($event, comment)">{{ comment.textFileName }}</button>
+      </div>
+
+      @if('isPending' in comment && comment.isPending){
+        @for (error of comment.errors; track error.key){
+        <span class="error-text">
+        error in {{ error.key }}. Errors:
+        @for (val of error.values; track $index){
+        {{ val }}
+        }
+        </span>
+      }
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,188 @@
+.create-form { display:flex; flex-direction:column; gap:8px; }
+.form-row { display:flex; align-items:flex-start; gap:12px; }
+.comment-text-row { flex-direction: column; align-items: stretch; }
+.form-row input,
+.form-row textarea {
+  box-sizing: border-box;
+  min-width: 0; /* allow flex children to shrink within parent */
+  width: auto;
+  flex: 1 1 auto; /* shrink correctly when sibling has fixed width */
+}
+.tag-insert-toolbar {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  width: 100%;
+  overflow-x: auto;
+}
+.tag-insert-button {
+  flex: 0 0 auto;
+  padding: 5px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 5px;
+  background: #fff;
+  color: #1f2937;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.tag-insert-button:hover { background: #f3f4f6; }
+.tag-insert-button:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+.tag-hint {
+  width: 100%;
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 6px;
+  /* force the hint to take the full row and appear above the textarea in the .form-row flex container */
+  flex: 0 0 100%;
+  order: -1;
+}
+.tag-hint code {
+  background: rgba(15,23,42,0.03);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', monospace;
+}
+/* form-row with a label on the left and content on the right */
+.form-row--hint { align-items: flex-start; }
+.form-label { width: 140px; font-weight: 600; color: #111827; }
+.form-row--hint .tag-hint { margin: 0; }
+.captcha-row {
+  display:flex;
+  gap:8px;
+  align-items:center;
+  /* allow wrapping so the question is never overlapped by the input/button */
+  flex-wrap: wrap;
+  /* span full form width: question left, controls grouped on the right */
+  justify-content: space-between;
+  width: 100%;
+}
+.captcha-question {
+  /* allow the question to take available space but shrink when needed so input/button remain on the same line */
+  white-space: normal;
+  margin-right: 8px;
+  flex: 1 1 auto;
+  min-width: 0; /* allow shrinking inside flex container */
+}
+
+.captcha-left {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  /* allow the left group to wrap its children (question + answer) when space is constrained */
+  flex-wrap: wrap;
+}
+
+/* keep input and button at their intrinsic size so they don't cover the question */
+.captcha-row input,
+.captcha-row button {
+  flex: 0 0 auto;
+}
+
+/* make the answer input shorter so captcha question has more room */
+.captcha-row input[name="captchaAnswer"] {
+  /* make the answer field larger but allow it to wrap under the question when space is limited */
+  width: 320px; /* preferred width */
+  max-width: 40%;
+  flex: 0 0 auto;
+}
+
+/* push reload button to the right edge of the captcha row */
+.captcha-row button {
+  margin-left: auto;
+}
+
+/* ensure question text stays left-aligned and does not expand to center */
+.captcha-question {
+  text-align: left;
+  flex: 0 1 auto;
+}
+
+.captcha-img {
+  max-height: 56px;
+  height: auto;
+  margin-right: 8px;
+  border: 1px solid rgba(0,0,0,0.04);
+  border-radius: 4px;
+}
+
+/* On narrow viewports, allow wrapping so the question and controls remain visible without overlap */
+@media (max-width: 520px) {
+  .captcha-row {
+    flex-wrap: wrap;
+  }
+}
+.field-error { color:#ef4444; font-size:0.85rem; margin-top:6px; flex:0 0 180px; }
+.post-btn { background:#10b981; color:#fff; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:600; font-size:1rem; line-height:1; font-family:system-ui, -apple-system, sans-serif; }
+.post-btn:disabled { cursor: not-allowed; opacity: 1; }
+.post-btn[disabled] {
+  /* Inactive state color: warm brown to distinguish from primary */
+  background: #7a5539; /* brown */
+  color: #fff;
+  box-shadow: none;
+}
+.create-btn { background:#2563eb; color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:600; font-size:1rem; line-height:1; font-family:system-ui, -apple-system, sans-serif; }
+.item-img { width:48px; height:48px; border-radius:6px; object-fit:cover; }
+.modal-dialog {
+  overflow: visible; /* prevent modal-internal horizontal scrollbar */
+}
+/* Use a named CSS animation so animationend fires reliably (transitions fire transitionend instead).
+   This avoids relying on transitionend/animationend mismatch which caused flicker. */
+.file-preview {
+  transform-origin: left top;
+  min-height: 0; /* allow collapse when empty */
+  margin-top: 6px;
+}
+.file-preview.file-opening {
+  animation: file-opening 300ms cubic-bezier(.2,.8,.2,1) forwards;
+}
+
+.file-preview-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: #f0fdf4; /* light green background */
+  border: 1px solid #dcfce7; /* light green border */
+  border-radius: 4px;
+  color: #166534; /* dark green text */
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.remove-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1;
+  font-family: system-ui, -apple-system, sans-serif;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.remove-btn:hover {
+  background: #dc2626;
+}
+
+.remove-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@keyframes file-opening {
+  from { transform: none; opacity: 1; }
+  30% { transform: scale(0.995) translateY(-2px); opacity: 0.98; }
+  to   { transform: scale(0.98) translateY(-6px); opacity: 0.95; }
+}
+@media (max-width:700px){
+  .form-row{flex-direction:column;}
+  .captcha-row{flex-direction:column; align-items:stretch; gap:6px;}
+  .captcha-question{white-space:normal; overflow:visible; text-overflow:clip; margin-right:0;}
+  .field-error{flex:none;width:auto;}
+}

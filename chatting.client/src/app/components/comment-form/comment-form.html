@@ -1,0 +1,82 @@
+<form class="create-form" (ngSubmit)="onSubmit($event, f)" #f="ngForm">
+  <div class="form-row">
+    <input name="userName" [(ngModel)]="model.userName" #userName="ngModel" placeholder="Name" required pattern="^(?=.*[A-Za-z0-9])[A-Za-z0-9\s]+$" />
+    <div *ngIf="userName.invalid && (userName.touched || userName.dirty)" class="field-error">
+      <div *ngIf="userName.errors?.['required']">Name is required.</div>
+      <div *ngIf="userName.errors?.['pattern']">Name must contain at least one letter or digit.</div>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <input name="userEmail" [(ngModel)]="model.userEmail" #userEmail="ngModel" type="email" placeholder="Email" required pattern="[^\s@]+@[^\s@]+\.[^\s@]+" />
+    <div *ngIf="userEmail.invalid && (userEmail.touched || userEmail.dirty)" class="field-error">
+      <div *ngIf="userEmail.errors?.['required']">Email is required.</div>
+      <div *ngIf="userEmail.errors?.['pattern']">Email must match the required format (user@example.com).</div>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <input name="homePageUrl" [(ngModel)]="model.homePageUrl" #homePageUrl="ngModel" placeholder="https://example.com (optional)" pattern="https?://.+"/>
+      <div *ngIf="homePageUrl.invalid && (homePageUrl.touched || homePageUrl.dirty)" class="field-error">
+        <div *ngIf="homePageUrl.errors?.['pattern']">The value does not build an URL.</div>
+      </div>
+  </div>
+
+  <div class="form-row form-row--hint">
+    <div class="tag-hint">Allowed tags: <code>&lt;strong&gt;</code>, <code>&lt;i&gt;</code>, <code>&lt;code&gt;</code>, <code>&lt;a href="..."&gt;</code></div>
+  </div>
+
+  <div class="form-row comment-text-row">
+    <div class="tag-insert-toolbar" role="toolbar" aria-label="Insert allowed formatting tags">
+      <button type="button" class="tag-insert-button" aria-label="Insert strong tags" (click)="insertTag('strong', commentTextArea)"><code>&lt;strong&gt;&lt;/strong&gt;</code></button>
+      <button type="button" class="tag-insert-button" aria-label="Insert italic tags" (click)="insertTag('i', commentTextArea)"><code>&lt;i&gt;&lt;/i&gt;</code></button>
+      <button type="button" class="tag-insert-button" aria-label="Insert code tags" (click)="insertTag('code', commentTextArea)"><code>&lt;code&gt;&lt;/code&gt;</code></button>
+      <button type="button" class="tag-insert-button" aria-label="Insert link tags" (click)="insertTag('a', commentTextArea)"><code>&lt;a href=""&gt;&lt;/a&gt;</code></button>
+    </div>
+    <textarea name="text" [(ngModel)]="model.text" #text="ngModel" #commentTextArea rows="3" placeholder="Comment" required pattern=".*\S.*"></textarea>
+    <div *ngIf="text.invalid && (text.touched || text.dirty)" class="field-error">
+      <div *ngIf="text.errors?.['required']">Comment is required.</div>
+      <div *ngIf="text.errors?.['pattern']">Comment must contain at least one non-space character.</div>
+    </div>
+    <div *ngIf="model.textError" class="field-error">{{ model.textError }}</div>
+  </div>
+  
+  <div class="form-row">
+    <label>Image (optional)</label>
+    <app-photo-uploader (onPhotoReady)="model.imageUrl = $event"></app-photo-uploader>
+    <img *ngIf="model.imageUrl" [src]="model.imageUrl" alt="preview" class="item-img" />
+  </div>
+
+  <div class="form-row" (click)="$event.stopPropagation()">
+    <label>Attach .txt (optional)</label>
+    <input type="file" #fileInput accept=".txt,text/plain" (change)="onTextFileSelected($event)" (click)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()" />
+    <div class="file-preview" [class.file-opening]="fileOpening" (animationend)="onFileAnimationEnd($event)">
+      <button type="button" class="remove-btn" (click)="onRemoveFile(fileInput)">Remove</button>
+      <div *ngIf="model.textFileError" class="field-error">{{ model.textFileError }}</div>
+      <div *ngIf="model.textFileName" class="file-preview-content">
+        <button type="button" class="remove-btn" (click)="onFilePreview(fileInput)">Preview</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-row" *ngIf="localCaptchaQuestion || localCaptchaImage || localCaptchaId">
+    <div class="captcha-row">
+      <div class="captcha-left">
+        <img *ngIf="localCaptchaImage" [src]="localCaptchaImage" alt="Captcha" class="captcha-img" />
+        <span *ngIf="!localCaptchaImage" class="captcha-question">{{ localCaptchaQuestion ?? (localCaptchaId ? 'Loading captcha…' : '') }}</span>
+        <input name="captchaAnswer" maxlength="5" [(ngModel)]="localCaptchaAnswer" #captchaAns="ngModel" pattern="^[A-Z0-9]+$" inputmode="numeric" placeholder="Answer" required (input)="onCaptchaInput()" />
+      </div>
+      <button type="button" class="create-btn" (click)="onLoadCaptcha()" [disabled]="localCaptchaLoading">Reload Captcha</button>
+    </div>
+    <div *ngIf="(captchaAns.invalid && (captchaAns.touched || captchaAns.dirty)) || localCaptchaError" class="field-error">
+      <div *ngIf="captchaAns.errors?.['required']">Answer is required.</div>
+      <div *ngIf="captchaAns.errors?.['pattern']">Answer must consist of [A-Z0-9].</div>
+      <div *ngIf="localCaptchaError">{{ localCaptchaError }}</div>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="post-btn" [disabled]="f.invalid || localCaptchaLoading || localCaptchaError || model.textFileError">Post</button>
+    <button type="button" class="create-btn" (click)="onCancel()">Cancel</button>
+  </div>
+</form>

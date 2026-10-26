@@ -1,0 +1,18 @@
+<div class="uploader-container">
+  <!-- Скрытый стандартный инпут -->
+  <input id="file-upload"
+         type="file"
+         (change)="onFileSelected($event)"
+         accept=".jpg, .jpeg, .png, .gif, image/jpeg, image/png, image/gif">
+
+  <!-- Кастомная кнопка для красивого интерфейса -->
+  <label for="file-upload" class="custom-file-upload">
+    Select and compress an image
+  </label>
+
+  <!-- Локальное превью -->
+  <div class="preview-container" *ngIf="previewUrl">
+    <p>Processed image to 320x240 px</p>
+    <img [src]="previewUrl" alt="Превью">
+  </div>
+</div>

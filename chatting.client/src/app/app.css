@@ -1,0 +1,23 @@
+:host {
+    max-width: 1280px;
+    padding: 2rem;
+    text-align: center;
+}
+
+th, td {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+table {
+    margin: 0 auto;
+}
+
+.main-content {
+  display: block;
+  min-height: calc(100vh - 64px); 
+  background-color: #f8f9fa;
+}
+
+
+

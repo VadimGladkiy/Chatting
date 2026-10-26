@@ -1,0 +1,28 @@
+
+<div class="site-header">
+  The site is designed to leave comments.
+</div>
+
+@if(modalRequest){
+<div class="modal-overlay">
+  <div class="modal-dialog">
+    <app-comment-form [model]="modalRequest?.requestData"
+                      [responseChannel]="modalRequest?.responseChannel">
+    </app-comment-form>
+  </div>
+</div>
+}
+
+<div class="ui-tree">
+  <app-tree-wrapper (openFilePreview)="openPreview($event)"></app-tree-wrapper>
+</div>
+<!-- Global Lightbox-style preview for text files (single instance) -->
+<div class="lightbox-overlay" *ngIf="previewOpen" (click)="closePreview()">
+  <div class="lightbox-content" (click)="$event.stopPropagation()">
+    <button class="lightbox-close" (click)="closePreview()">×</button>
+    <h3 class="lightbox-title">{{ previewTitle }}</h3>
+    <div class="lightbox-inner">
+      <pre>{{ previewContent }}</pre>
+    </div>
+  </div>
+</div>

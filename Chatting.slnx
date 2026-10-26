@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="chatting.client/chatting.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="Chatting.server.tests/Chatting.server.tests.csproj" Id="6693664f-0ac5-49e3-9604-e0d6304c262e" />
+  <Project Path="Chatting.Server/Chatting.Server.csproj" />
+</Solution>

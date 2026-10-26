@@ -1,0 +1,58 @@
+/* You can add global styles to this file, and also import other style files */
+
+
+
+/* Global styles for paged-list forms to ensure styles apply immediately when forms are inserted */
+.create-form,
+.reply-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid rgba(16,24,40,0.04);
+  padding: 10px;
+  border-radius: 6px;
+  background: #fafafa;
+}
+.create-form input,
+.create-form textarea,
+.reply-form input,
+.reply-form textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(16,24,40,0.08);
+  box-sizing: border-box;
+}
+.form-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.post-btn {
+  background: #10b981;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.post-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.create-btn {
+  align-self: flex-start;
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.create-btn:hover { background: #1e40af; }
+
+/* Reply form inline under a comment (global) */
+.reply-form {
+  margin-top: 8px;
+  margin-left: 56px; /* shift right */
+  border-left: 2px solid rgba(16,24,40,0.04);
+  padding-left: 12px;
+  background: #ffffff;
+  border-radius: 6px;
+}
+

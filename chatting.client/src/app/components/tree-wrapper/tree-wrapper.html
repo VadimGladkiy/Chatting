@@ -1,0 +1,38 @@
+<button class="create-btn" (click)="onNewThreadClicked($event)" [disabled]="false">
+  New Thread
+</button>
+
+<div class="tree-wrapper">
+  <div class="tree-header">
+    <button type="button" class="col-left header-col" [attr.aria-sort]="sortAriaValue('userName')" (click)="sortByColumn('userName')">
+      User name <span aria-hidden="true">{{ sortIndicator('userName') }}</span>
+    </button>
+    <button type="button" class="col-email header-col" [attr.aria-sort]="sortAriaValue('userEmail')" (click)="sortByColumn('userEmail')">
+      User email <span aria-hidden="true">{{ sortIndicator('userEmail') }}</span>
+    </button>
+    <button type="button" class="col-date header-col" [attr.aria-sort]="sortAriaValue('date')" (click)="sortByColumn('date')">
+      Date <span aria-hidden="true">{{ sortIndicator('date') }}</span>
+    </button>
+  </div>
+
+  <div class="tree-body">
+    <ng-container *ngFor="let node of nodes; trackBy: trackByComment">
+      <app-tree-node [model]="node"
+                     [depth]="0"
+                     [pageSize]="pageSize"
+                     (denyPending)="onDenyPendingHandler($event)"
+                     (openFilePreview)="onFilePreviewHandler($event)">
+      </app-tree-node>
+    </ng-container>
+  </div>
+
+  <nav class="pagination-controls" *ngIf="totalPages > 1" aria-label="Comment pages">
+    <button type="button" (click)="previousPage()" [disabled]="isLoading || currentPage <= 1">
+      Previous
+    </button>
+    <span aria-live="polite">Page {{ currentPage }} of {{ totalPages }}</span>
+    <button type="button" (click)="nextPage()" [disabled]="isLoading || currentPage >= totalPages">
+      Next
+    </button>
+  </nav>
+</div>

@@ -1,0 +1,54 @@
+<div class="tree-node-wrapper" [style.margin-left.px]="depth ? 24 : 0">
+  <div class="tree-node-row">
+    <button class="expand-btn" (click)="toggle($event)" [disabled]="isPending()">
+      <ng-container *ngIf="!expanded">+</ng-container>
+      <ng-container *ngIf="expanded">−</ng-container>
+    </button>
+
+    <app-list-item [comment]="model.comment"
+                   (replyClicked)="onReplyClicked($event)"
+                   (denyPendingClicked)="onDenyPendingClicked($event)"
+                   (confirmPendingClicked)="onConfirmPendingClicked($event)"
+                   (filePreviewClicked)="onFilePreviewClicked($event)">
+    </app-list-item>
+  </div>
+
+  <div class="children-area" *ngIf="expanded">
+    <div *ngIf="isLoading" class="children-loading">Loading...</div>
+
+    <ng-container *ngIf="children && children.length > 0">
+      <!-- if many children, use virtual scroll for performance -->
+      <cdk-virtual-scroll-viewport *ngIf="childrenTotal > 100" itemSize="72" class="virtual-viewport">
+        <div *cdkVirtualFor="let child of children; let i = index; trackBy: trackByFn" class="virtual-row">
+          <app-tree-node [model]="child"
+                         [depth]="depth + 1"
+                         [pageSize]="pageSize"
+                         (denyPending)="onDenyPendingHandler($event)"
+                         (openFilePreview)="onFilePreviewClicked($event)">
+          </app-tree-node>
+        </div>
+      </cdk-virtual-scroll-viewport>
+
+      <!-- normal rendering for modest sizes -->
+      <ng-container *ngIf="childrenTotal <= 100">
+        <ng-container *ngFor="let child of children; trackBy: trackByFn">
+          <app-tree-node [model]="child"
+                         [depth]="depth + 1"
+                         [pageSize]="pageSize"
+                         (denyPending)="onDenyPendingHandler($event)"
+                         (openFilePreview)="onFilePreviewClicked($event)">
+          </app-tree-node>
+        </ng-container>
+      </ng-container>
+
+      <!-- pagination controls for children (server-side paging) -->
+      <div class="children-pagination" *ngIf="childrenTotal > pageSize">
+        <button (click)="prevPage($event)" [disabled]="!canPrev()">Previous</button>
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+        <button (click)="nextPage($event)" [disabled]="!canNext()">Next</button>
+      </div>
+    </ng-container>
+
+    <div *ngIf="children.length == 0 && !isLoading" class="children-empty">No replies</div>
+  </div>
+</div>
