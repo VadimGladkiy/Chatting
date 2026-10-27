@@ -71,11 +71,7 @@ try
     {
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        // Step 1: Create database if it doesn't exist
-        await dbContext.Database.EnsureCreatedAsync();
-        Log.Information("Database created or already exists.");
-
-        // Step 2: Apply any pending migrations
+        // Create/update the database schema through EF Core migrations.
         await dbContext.Database.MigrateAsync();
         Log.Information("Database migrations applied successfully.");
     }
@@ -101,10 +97,6 @@ catch (Exception ex)
     Log.Error(ex, "An error occurred while loading comments into cache.");
     throw;
 }
-
-app.UseDefaultFiles();
-
-app.MapStaticAssets();
 
 // Configure the HTTP request pipeline.
 

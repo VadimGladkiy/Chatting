@@ -6,41 +6,43 @@ import { CommentNotification } from '../models/comment';
 
 @Injectable({ providedIn: 'root' })
 export class CommentWsService {
-  // RxJS WebSocket сам управляет очередью отправки (буферизацией до статуса OPEN)
   private socket$!: WebSocketSubject<any>;
 
-  // Через этот поток компоненты будут получать сообщения
+  // Components can subscribe to this observable to receive messages from the server
   public messages$: Observable<any>;
   private pending = new Map<string, (value: any) => void>();
   private pendingReject = new Map<string, (err: any) => void>();
   public childCreated$ = new Subject<CommentNotification>();
 
   constructor() {
+    const url = new URL('/ws/comments', window.location.href);
+    url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:';
+
     this.socket$ = webSocket({
-      url: 'ws://localhost:5111/ws/comments',
+      url: url.toString(),
       deserializer: (msg) => msg.data,
       
       // 2. Настраиваем хук открытия сокета
       openObserver: {
         next: (event: Event) => {
-          console.log('Соединение с .NET сервером установлено!');
+          console.log('WS connection established with .NET server!');
         }
       },
       
-      // Опционально: хук закрытия сокета
+      // Optionally: hook for socket closure
       closeObserver: {
         next: (event: CloseEvent) => {
-          console.log('Соединение потеряно.', event.reason);
+          console.log('WS connection lost.', event.reason);
         }
       }
     });
 
     this.messages$ = this.socket$.asObservable();
 
-    // Слушаем входящие сообщения от .NET Core бэкенда
+    // Listen for incoming messages from the .NET Core backend
     this.socket$.subscribe({
       next: (rawData: string) => this.handleMessage(rawData),
-      error: (err) => console.error('Ошибка сокета:', err)
+      error: (err) => console.error('WS error:', err)
     });
   }
 
