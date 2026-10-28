@@ -7,6 +7,7 @@ import { ModalTriggerService } from '../../services/modal-trigger-service';
 import { TreeNodeRegisterService } from '../../services/tree-node-register-service';
 import { ListItemComponent } from '../list-item/list-item';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { ConfigService } from '../../services/config-service';
 
 @Component({
   selector: 'app-tree-node',
@@ -18,7 +19,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 export class TreeNodeComponent implements OnInit, OnDestroy {
   @Input() model!: TreeNode;
   @Input() depth: number = 0;
-  @Input() pageSize: number = 3;
+  @Input() pageSize: number = 25;
   @Output() denyPending = new EventEmitter<TreeNode>();
   @Output() openFilePreview = new EventEmitter<FileAttachment>();
 
@@ -36,9 +37,12 @@ export class TreeNodeComponent implements OnInit, OnDestroy {
   constructor(private treeNodeRegisterService: TreeNodeRegisterService,
     private modalTriggerService: ModalTriggerService,
     private commentApiService: CommentApiService,
-    private cdr: ChangeDetectorRef){}
+    private cdr: ChangeDetectorRef,
+    private configService: ConfigService){}
 
   ngOnInit(): void {
+    this.pageSize = this.configService.pageSize;
+
     if(!this.isPending()){
      this.treeNodeRegisterService.registerTreeNode(this.model.comment.id, (x,y) => this.onChildCreated(x,y));
     }

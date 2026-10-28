@@ -7,6 +7,7 @@ import { Subject, Subscription } from 'rxjs';
 import { ModalTriggerService } from '../../services/modal-trigger-service';
 import { CommentWsService } from '../../services/comment-ws-service';
 import { TreeNodeRegisterService } from '../../services/tree-node-register-service';
+import { ConfigService } from '../../services/config-service';
 
 type RootSortField = 'userName' | 'userEmail' | 'date';
 type SortDirection = 'asc' | 'desc';
@@ -19,7 +20,7 @@ type SortDirection = 'asc' | 'desc';
   styleUrls: ['./tree-wrapper.css']
 })
 export class TreeWrapperComponent implements OnInit, OnDestroy {
-  @Input() pageSize = 3;
+  @Input() pageSize = 25;
   @Output() openFilePreview: EventEmitter<FileAttachment> = new EventEmitter<FileAttachment>();
 
   nodes: TreeNode[] = [];
@@ -34,18 +35,19 @@ export class TreeWrapperComponent implements OnInit, OnDestroy {
   // communication
   popupSubscription: Subscription | null = null;
   responseChannel: Subject<EditedComment | null> = new Subject<EditedComment | null>();
-  clientId: string;
+  clientId!: string;
 
   constructor(private treeNodeRegisterService: TreeNodeRegisterService,
     private commentApiService: CommentApiService,
     private commentWsService: CommentWsService,
     private modalTriggerService: ModalTriggerService,
-    private cdr: ChangeDetectorRef)
-    {
-      this.clientId = commentApiService.clientId;
-    }
+    private cdr: ChangeDetectorRef,
+    private configService: ConfigService){}
 
   ngOnInit(): void {
+    this.clientId = this.commentApiService.clientId;
+    this.pageSize = this.configService.pageSize;
+
     this.loadRootPage();
 
     this.treeNodeRegisterService.registerTreeNode('', (x,y) => this.onChildCreated(x,y));
@@ -84,7 +86,7 @@ export class TreeWrapperComponent implements OnInit, OnDestroy {
           return;
         }
 
-        this.nodes = resp.comments?.map((x): TreeNode => {
+        this.nodes = resp.comments?.map((x: Comment): TreeNode => {
           return { nodeId: crypto.randomUUID(), comment: x, children: [], isLoading: false };}) ?? [];
 
         this.totalItems = resp.totalItems ?? 0;
@@ -237,7 +239,6 @@ export class TreeWrapperComponent implements OnInit, OnDestroy {
         console.error('Error in popup channel', err);
       },
       complete: () => {
-        console.log('Popup channel completed');
         this.clearCommunication();
       }
     });
@@ -266,7 +267,6 @@ export class TreeWrapperComponent implements OnInit, OnDestroy {
     this.popupSubscription?.unsubscribe();
 
     if(this.responseChannel){
-      //this.responseChannel.next(null);
       this.responseChannel.complete();
     }
   }

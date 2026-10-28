@@ -1,5 +1,6 @@
 services:
   app:
+    image: hladkyivadym/chatting-server:latest
     build:
       context: .
       dockerfile: Chatting.Server/Dockerfile
@@ -14,6 +15,7 @@ services:
         condition: service_healthy
 
   client:
+    image: hladkyivadym/chatting-client:latest
     build:
       context: .
       dockerfile: chatting.client/Dockerfile

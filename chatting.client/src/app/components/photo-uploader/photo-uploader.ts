@@ -16,13 +16,13 @@ export class PhotoUploaderComponent {
   @Output() onPhotoReady = new EventEmitter<string>();
 
   onFileSelected(event: Event): void {
-  const input = event.target as HTMLInputElement;
-  if (!input.files || input.files.length === 0) return;
-
-  const file = input.files[0]; // Важно: берем именно первый элемент [0]
-  const reader = new FileReader();
-
-  reader.onload = (e: any) => {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+    
+    const file = input.files[0]; // Важно: берем именно первый элемент [0]
+    const reader = new FileReader();
+    
+    reader.onload = (e: any) => {
     const img = new Image();
     img.src = e.target.result;
 
@@ -31,20 +31,16 @@ export class PhotoUploaderComponent {
       const maxWidth = 320;
       const maxHeight = 240;
 
-      console.log(`Размеры исходного фото: ${img.width}x${img.height}`);
-
       if (img.width > maxWidth || img.height > maxHeight) {
-        console.log('Картинка большая, запускаем resizeImage...');
         this.resizeImage(img, maxWidth, maxHeight);
       } else {
-        console.log('Картинка маленькая, отправляем сразу...');
         this.emitPhoto(img.src);
       }
     };
   };
-
-  reader.readAsDataURL(file);
-}
+    
+    reader.readAsDataURL(file);
+  }
 
   private resizeImage(img: HTMLImageElement, maxWidth: number, maxHeight: number): void {
     const canvas = document.createElement('canvas');
@@ -75,7 +71,6 @@ export class PhotoUploaderComponent {
   }
 
   private emitPhoto(base64Data: string): void {
-    console.log('1. Дочерний компонент подготовил Base64 и сейчас вызовет emit()');
     this.previewUrl = base64Data;
     this.onPhotoReady.emit(base64Data); // Передаем родителю
   }
