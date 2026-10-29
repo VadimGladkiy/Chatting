@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
+import { v4 as uuidv4 } from 'uuid';
 import { CommentNotification } from '../models/comment';
 
 @Injectable({ providedIn: 'root' })
@@ -98,7 +99,7 @@ export class CommentWsService {
   }
 
  private sendRequest(payload: any, timeoutMs = 10000): Promise<any> {
-    const requestId = (crypto && (crypto as any).randomUUID) ? (crypto as any).randomUUID() : Math.random().toString(36).slice(2);
+    const requestId = uuidv4();
     payload.requestId = requestId;
     return new Promise((resolve, reject) => {
       this.pending.set(requestId, resolve);

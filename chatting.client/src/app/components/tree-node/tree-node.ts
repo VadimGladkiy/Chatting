@@ -1,13 +1,14 @@
 import { Component, Input, OnInit, OnDestroy, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription, Subject, firstValueFrom } from 'rxjs';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { v4 as uuidv4 } from 'uuid';
+import { ConfigService } from '../../services/config-service';
 import { TreeNode, Comment, PageInfo, FileAttachment, EditedComment, PagedResponse } from '../../models/comment';
 import { CommentApiService } from '../../services/comment-api-service';
 import { ModalTriggerService } from '../../services/modal-trigger-service';
 import { TreeNodeRegisterService } from '../../services/tree-node-register-service';
 import { ListItemComponent } from '../list-item/list-item';
-import { ScrollingModule } from '@angular/cdk/scrolling';
-import { ConfigService } from '../../services/config-service';
 
 @Component({
   selector: 'app-tree-node',
@@ -86,7 +87,7 @@ export class TreeNodeComponent implements OnInit, OnDestroy {
   private insertChildren(response: PagedResponse, pageNumber: number){
 
     this.children = response.comments?.map((x): TreeNode =>
-       { return { nodeId: crypto.randomUUID(), comment: x, children: [], isLoading: false };
+       { return { nodeId: uuidv4(), comment: x, children: [], isLoading: false };
     }) ?? [];
 
     this.childrenTotal = response.totalItems ?? (this.children ? this.children.length : 0);
@@ -105,7 +106,7 @@ export class TreeNodeComponent implements OnInit, OnDestroy {
     }
 
     if(insert){
-      let node = { nodeId: crypto.randomUUID(), comment: item, children: [], isLoading: false } as TreeNode;
+      let node = { nodeId: uuidv4(), comment: item, children: [], isLoading: false } as TreeNode;
       this.children.unshift(node);
 
       if(this.children.length > this.pageSize){
@@ -199,7 +200,7 @@ export class TreeNodeComponent implements OnInit, OnDestroy {
           return;
         }
 
-        const node: TreeNode = { nodeId: crypto.randomUUID(), comment: pending, children: [], isLoading: false };
+        const node: TreeNode = { nodeId: uuidv4(), comment: pending, children: [], isLoading: false };
         this.children = [node, ...this.children ?? []];
         this.cdr.detectChanges();
       },

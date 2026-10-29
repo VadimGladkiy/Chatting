@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subject, Subscription } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
 import { TreeNode, Comment, PageInfo, FileAttachment, EditedComment, CommentNotification } from '../../models/comment';
 import { CommentApiService } from '../../services/comment-api-service';
 import { TreeNodeComponent } from '../tree-node/tree-node';
-import { Subject, Subscription } from 'rxjs';
 import { ModalTriggerService } from '../../services/modal-trigger-service';
 import { CommentWsService } from '../../services/comment-ws-service';
 import { TreeNodeRegisterService } from '../../services/tree-node-register-service';
@@ -87,7 +88,7 @@ export class TreeWrapperComponent implements OnInit, OnDestroy {
         }
 
         this.nodes = resp.comments?.map((x: Comment): TreeNode => {
-          return { nodeId: crypto.randomUUID(), comment: x, children: [], isLoading: false };}) ?? [];
+          return { nodeId: uuidv4(), comment: x, children: [], isLoading: false };}) ?? [];
 
         this.totalItems = resp.totalItems ?? 0;
         this.calcTotalPages();
@@ -179,7 +180,7 @@ export class TreeWrapperComponent implements OnInit, OnDestroy {
     }
 
     if(insert){
-      let node = { nodeId: crypto.randomUUID(), comment: item, children: [], isLoading: false } as TreeNode;
+      let node = { nodeId: uuidv4(), comment: item, children: [], isLoading: false } as TreeNode;
       this.nodes.unshift(node);
 
       if(this.nodes.length > this.pageSize){
@@ -231,7 +232,7 @@ export class TreeWrapperComponent implements OnInit, OnDestroy {
           return;
         }
 
-        const node: TreeNode = { nodeId: crypto.randomUUID(), comment: pending, children: [], isLoading: false };
+        const node: TreeNode = { nodeId: uuidv4(), comment: pending, children: [], isLoading: false };
         this.nodes = [node, ...this.nodes];
         this.cdr.detectChanges();
       },

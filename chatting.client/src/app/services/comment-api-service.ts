@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
 import { Comment, EditedComment, PagedResponse } from '../models/comment';
 
 // Interface for the structure of a single ite
@@ -11,7 +12,7 @@ import { Comment, EditedComment, PagedResponse } from '../models/comment';
 export class CommentApiService {
   // Specify the URL of your API here
   private apiUrl = 'api/Comments';
-  public clientId: string = crypto.randomUUID();
+  public clientId: string = uuidv4();
 
   constructor(private http: HttpClient) {}
 

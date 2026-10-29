@@ -2,8 +2,9 @@ import { Component, Input, ChangeDetectorRef, ViewChild, ElementRef, AfterViewIn
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { PhotoUploaderComponent } from '../photo-uploader/photo-uploader';
 import { finalize } from 'rxjs/operators';
+import { v4 as uuidv4 } from 'uuid';
+import { PhotoUploaderComponent } from '../photo-uploader/photo-uploader';
 import { EditedComment, FileAttachment } from '../../models/comment';
 import { CommentApiService } from '../../services/comment-api-service';
 import { CommentWsService } from '../../services/comment-ws-service';
@@ -214,7 +215,7 @@ export class CommentFormComponent implements OnInit, AfterViewInit {
       // here translate a payload into a pending comment
       const now: Date = new Date();
       const d: string = this.datePipe.transform(now, 'yyyy-MM-dd HH:mm:ss') ?? 'error converting date';
-      const tempId = crypto.randomUUID();
+      const tempId = uuidv4();
 
       this.model.id = tempId,
       this.model.date = d;
