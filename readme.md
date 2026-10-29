@@ -18,7 +18,7 @@ In that file you just need to replace the DB_PASSWORD value with your own strong
 
 4.1 docker compose -f compose.images.yaml pull
 
-4.2 docker compose -f compose.images.yaml up -d
+4.2 docker compose -f compose.images.yaml up -d --force-recreate
 
 5. Go to Docker -> Containers :
 
