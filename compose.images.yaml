@@ -7,6 +7,8 @@ services:
       ConnectionStrings__ChattingDatabase: "Server=sql,1433;Database=ChattingDb;User Id=sa;Password=${DB_PASSWORD:?Set DB_PASSWORD in .env};Encrypt=True;TrustServerCertificate=True"
     ports:
       - "8080:8080"
+    networks:
+      - chatting-network
     depends_on:
       sql:
         condition: service_healthy
@@ -17,6 +19,8 @@ services:
       API_PROXY_TARGET: http://app:8080
     ports:
       - "53160:53160"
+    networks:
+      - chatting-network
     depends_on:
       - app
 
@@ -28,6 +32,8 @@ services:
       MSSQL_SA_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
     ports:
       - "1433:1433"
+    networks:
+      - chatting-network
     volumes:
       - sql_data:/var/opt/mssql
     healthcheck:
@@ -36,6 +42,10 @@ services:
       timeout: 5s
       retries: 15
       start_period: 30s
+
+networks:
+  chatting-network:
+    driver: bridge
 
 volumes:
   sql_data:

@@ -9,4 +9,4 @@ COPY chatting.client/ ./
 
 EXPOSE 53160
 
-CMD ["npx", "ng", "serve", "--host", "0.0.0.0", "--port", "53160"]
+CMD ["npx", "ng", "serve", "--host", "0.0.0.0", "--port", "53160", "--proxy-config", "src/proxy.conf.js"]
