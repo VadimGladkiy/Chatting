@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { Comment, EditedComment, FileAttachment } from '../../models/comment';
 
@@ -17,8 +16,7 @@ export class ListItemComponent implements OnInit, OnDestroy{
   @Output() confirmPendingClicked = new EventEmitter<EditedComment>();
   @Output() filePreviewClicked = new EventEmitter<FileAttachment>();
 
-  constructor(private cdr: ChangeDetectorRef,
-    private sanitizer: DomSanitizer){}
+  constructor(private cdr: ChangeDetectorRef){}
 
   ngOnInit(){
 
@@ -52,10 +50,9 @@ export class ListItemComponent implements OnInit, OnDestroy{
   }
 
   // Render user-supplied lightweight markup ([i], [strong], [code], [a]) to safe HTML
-  private renderText(raw: string | undefined | null): SafeHtml {
+  private renderText(raw: string | undefined | null): string {
     const s = raw ?? '';
-    const html = this.markupToHtml(s);
-    return this.sanitizer.bypassSecurityTrustHtml(html);
+    return this.markupToHtml(s);
   }
 
   // Convert simple BBCode-like tags to escaped HTML. This function always escapes input
