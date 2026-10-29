@@ -18,7 +18,6 @@ export interface Comment {
   parentId: string | null;
   textFileName?: string;
   textFileContent?: string;
-  errors?: FieldError[];
 }
 
 // Edited comment
@@ -27,6 +26,7 @@ export interface EditedComment extends Comment {
   clientId: string;
   textError?: string;
   textFileError?: string;
+  isLocked: boolean;
 }
 
 export interface FieldError{

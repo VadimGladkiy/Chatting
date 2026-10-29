@@ -220,7 +220,6 @@ export class CommentFormComponent implements OnInit, AfterViewInit {
       this.model.id = tempId,
       this.model.date = d;
       this.model.isPending = true;
-      this.model.errors = undefined;
 
       // push a pending comment to the modal invoker
       this.responseChannel.next(this.model);

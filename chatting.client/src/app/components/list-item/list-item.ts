@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Comment, EditedComment, FileAttachment } from '../../models/comment';
+import { Comment, EditedComment, FieldError, FileAttachment } from '../../models/comment';
 
 @Component({
   selector: 'app-list-item',
@@ -11,6 +11,7 @@ import { Comment, EditedComment, FileAttachment } from '../../models/comment';
 })
 export class ListItemComponent implements OnInit, OnDestroy{
   @Input() comment!: Comment;
+  @Input() errors: FieldError[] | undefined;
   @Output() replyClicked = new EventEmitter<Comment>();
   @Output() denyPendingClicked = new EventEmitter<any>();
   @Output() confirmPendingClicked = new EventEmitter<EditedComment>();
@@ -26,8 +27,27 @@ export class ListItemComponent implements OnInit, OnDestroy{
     
   }
 
+  private isPending(){
+    return 'isPending' in this.comment && this.comment.isPending;
+  }
+
+  private isLocked(): boolean
+  {
+    if('isLocked' in this.comment && this.comment.isLocked){
+      return true;
+    }else
+    {
+      return false;
+    }
+  }
+
   onConfirmPendingClick(event: Event): void {
     event.stopPropagation();
+
+    if('isLocked' in this.comment){
+      this.comment.isLocked = true;
+    }
+
     this.confirmPendingClicked.emit(this.comment as EditedComment);
   }
 

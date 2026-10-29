@@ -12,21 +12,19 @@ import { CommonModule } from '@angular/common';
 export class PhotoUploaderComponent {
   previewUrl: string | null = null;
 
-  // Событие для передачи Base64-строки родителю
   @Output() onPhotoReady = new EventEmitter<string>();
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
     
-    const file = input.files[0]; // Важно: берем именно первый элемент [0]
+    const file = input.files[0];
     const reader = new FileReader();
     
     reader.onload = (e: any) => {
     const img = new Image();
     img.src = e.target.result;
 
-    // Используем стрелочную функцию, чтобы "this" внутри указывал на компонент
     img.onload = () => {
       const maxWidth = 320;
       const maxHeight = 240;
@@ -44,20 +42,11 @@ export class PhotoUploaderComponent {
 
   private resizeImage(img: HTMLImageElement, maxWidth: number, maxHeight: number): void {
     const canvas = document.createElement('canvas');
-    let width = img.width;
-    let height = img.height;
-
-    if (width > height) {
-      if (width > maxWidth) {
-        height = Math.round((height * maxWidth) / width);
-        width = maxWidth;
-      }
-    } else {
-      if (height > maxHeight) {
-        width = Math.round((width * maxHeight) / height);
-        height = maxHeight;
-      }
-    }
+    const sourceWidth = img.naturalWidth;
+    const sourceHeight = img.naturalHeight;
+    const scale = Math.min(maxWidth / sourceWidth, maxHeight / sourceHeight, 1);
+    const width = Math.round(sourceWidth * scale);
+    const height = Math.round(sourceHeight * scale);
 
     canvas.width = width;
     canvas.height = height;

@@ -221,7 +221,8 @@ export class TreeWrapperComponent implements OnInit, OnDestroy {
       textFileName: '',
       textFileContent: '',
       textFileError: '',
-      isPending: true
+      isPending: true,
+      isLocked: false
     };
 
     this.responseChannel = new Subject<EditedComment | null>();

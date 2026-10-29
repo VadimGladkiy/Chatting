@@ -2,9 +2,10 @@ import { Component, Input, OnInit, OnDestroy, ChangeDetectorRef, Output, EventEm
 import { CommonModule } from '@angular/common';
 import { Subscription, Subject, firstValueFrom } from 'rxjs';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { HttpErrorResponse } from '@angular/common/http';
 import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '../../services/config-service';
-import { TreeNode, Comment, PageInfo, FileAttachment, EditedComment, PagedResponse } from '../../models/comment';
+import { TreeNode, Comment, FieldError, PageInfo, FileAttachment, EditedComment, PagedResponse } from '../../models/comment';
 import { CommentApiService } from '../../services/comment-api-service';
 import { ModalTriggerService } from '../../services/modal-trigger-service';
 import { TreeNodeRegisterService } from '../../services/tree-node-register-service';
@@ -30,6 +31,7 @@ export class TreeNodeComponent implements OnInit, OnDestroy {
   totalPages: number = 1;
   isLoading = false;
   expanded = false;
+  apiErrors: FieldError[] = [];
 
   // communication
   popupSubscription: Subscription | null = null;
@@ -189,7 +191,8 @@ export class TreeNodeComponent implements OnInit, OnDestroy {
       textFileName: '',
       textFileContent: '',
       textFileError: '',
-      isPending: true
+      isPending: true,
+      isLocked: false
     };
 
     this.responseChannel = new Subject<EditedComment | null>();
@@ -264,9 +267,27 @@ export class TreeNodeComponent implements OnInit, OnDestroy {
         
         this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error('Error creation of comment.', err);
+      error: (err: HttpErrorResponse) => {
+
+        if(this.model.comment){
+
+          const mappedArray = Object.entries(err.error.errors).map(([key, value]) => {
+            return {
+              key: key,
+              values: value as string[],
+            };
+          });
+
+          this.apiErrors = mappedArray;
+
+          if('isLocked' in this.model.comment){
+            this.model.comment.isLocked = false;
+          }
+        }
+
         this.cdr.detectChanges();
+
+        console.error(err);
       }
     });
   }

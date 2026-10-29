@@ -6,6 +6,7 @@
     </button>
 
     <app-list-item [comment]="model.comment"
+                   [errors]="apiErrors"
                    (replyClicked)="onReplyClicked($event)"
                    (denyPendingClicked)="onDenyPendingClicked($event)"
                    (confirmPendingClicked)="onConfirmPendingClicked($event)"

@@ -2,8 +2,8 @@
   <div class="table-row list-item">
     <div class="col-left">
 
-      @if('isPending' in comment && comment.isPending){
-      <button class="confirm-btn" (click)="onConfirmPendingClick($event)">
+      @if(isPending()){
+      <button class="confirm-btn" (click)="onConfirmPendingClick($event)" [disabled]="isLocked()">
         Confirm
       </button>
       <button class="deny-btn" (click)="onDenyPendingClick($event)">Deny</button>
@@ -30,14 +30,14 @@
         <button type="button" class="file-name" (click)="onFilePreviewClick($event, comment)">{{ comment.textFileName }}</button>
       </div>
 
-      @if('isPending' in comment && comment.isPending){
-        @for (error of comment.errors; track error.key){
-        <span class="error-text">
+      @if(isPending() && errors){
+      @for (error of errors; track error.key){
+      <span class="error-text">
         error in {{ error.key }}. Errors:
         @for (val of error.values; track $index){
         {{ val }}
         }
-        </span>
+      </span>
       }
       }
     </div>
